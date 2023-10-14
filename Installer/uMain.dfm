@@ -11,10 +11,8 @@ object FrmInstall: TFrmInstall
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 13
   object lblDescription: TLabel
     Left = 16
@@ -38,6 +36,7 @@ object FrmInstall: TFrmInstall
     Align = alTop
     Caption = 'Delphi Versions'
     TabOrder = 1
+    ExplicitWidth = 561
     object lvDelphis: TListView
       Left = 2
       Top = 15
@@ -63,6 +62,7 @@ object FrmInstall: TFrmInstall
       TabOrder = 0
       ViewStyle = vsReport
       OnDblClick = lvDelphisDblClick
+      ExplicitWidth = 557
     end
   end
   object pnlDesc: TPanel
@@ -73,6 +73,7 @@ object FrmInstall: TFrmInstall
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 561
     object lblVersion: TLabel
       Left = 16
       Top = 11

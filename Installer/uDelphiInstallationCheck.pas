@@ -8,13 +8,17 @@ uses
 
   System.Win.Registry;
 
+const
+   DELPHI_EDITION_COMMUNITY: string = 'Starter';
+
 type
   TDelphiVersions = (
-    DelphiSeattle10,
+    DelphiSeattle100,
     DelphiBerlin101,
-    DelphiTokyo,
-    DelphiRio,
-    DelphiSydney);
+    DelphiTokyo102,
+    DelphiRio103,
+    DelphiSydney104,
+    DelphiAlexandria110);
 
   TDelphiInstallationCheck = class(TObject)
   public
@@ -23,6 +27,7 @@ type
     class function GetDelphiRegPathFromVersion(Version: TDelphiVersions): string;
     class function GetDelphiDpkFromVersion(Version: TDelphiVersions): string;
     class function GetDelphiNameByVersion(Version: TDelphiVersions): string;
+    class function GetEdition(Version: TDelphiVersions): string;
   end;
 
 implementation
@@ -36,7 +41,8 @@ const
     'RAD Studio 10.1 Berlin',
     'RAD Studio 10.2 Tokyo',
     'RAD Studio 10.3 Rio',
-    'RAD Studio 10.4 Sydney'
+    'RAD Studio 10.4 Sydney',
+    'RAD Studio 11.0 Alexandria'
     );
 
   TDelphiRegPaths: array [TDelphiVersions] of string = (
@@ -44,15 +50,17 @@ const
     '\Software\Embarcadero\BDS\18.0',
     '\Software\Embarcadero\BDS\19.0',
     '\Software\Embarcadero\BDS\20.0',
-    '\Software\Embarcadero\BDS\21.0'
+    '\Software\Embarcadero\BDS\21.0',
+    '\Software\Embarcadero\BDS\22.0'
   );
 
   TDelphiPackages: array [TDelphiVersions] of string = (
-    'DelphiBerlin\',
-    'DelphiSeattle\',
-    'DelphiTokyo\',
-    'DelphiRio\',
-    'DelphiSydney\'
+    'Delphi101\',
+    'Delphi100\',
+    'Delphi102\',
+    'Delphi103\',
+    'Delphi104\',
+    'Delphi110\'
   );
 
   DPK_FILENAME = 'RFindUnit.dpk';
@@ -154,6 +162,14 @@ begin
         ImageIndex := ImageList.Count - 1;
         Item.ImageIndex := ImageIndex;
       end;
+end;
+
+class function TDelphiInstallationCheck.GetEdition(Version: TDelphiVersions): string;
+begin
+  var regpath := GetDelphiRegPathFromVersion(Version);
+  if RegKeyExists(regpath, HKEY_CURRENT_USER) then
+    if not RegReadStr(regpath, 'Edition', result, HKEY_CURRENT_USER) then
+      result:= 'unknown';
 end;
 
 end.

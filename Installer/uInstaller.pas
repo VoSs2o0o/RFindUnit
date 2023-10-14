@@ -3,8 +3,7 @@ unit uInstaller;
 interface
 
 uses
-	ShellAPI, Windows, SysUtils, uDelphiInstallationCheck, Registry,
-  System.IOUtils;
+	ShellAPI, Windows, SysUtils, uDelphiInstallationCheck, System.Win.Registry;
 
 type
   TRetProcedure = procedure(Desc: string) of object;
@@ -26,8 +25,9 @@ type
 
 
     FDelphiVersion: TDelphiVersions;
-    FPackagePath: string;    procedure LoadPaths(DelphiDesc, DelphiPath: string);
+    FPackagePath: string;
 
+    procedure LoadPaths(DelphiDesc, DelphiPath: string);
     procedure CheckDelphiRunning;
     procedure CheckDpkExists;
     procedure RemoveCurCompiledBpl;
@@ -46,7 +46,7 @@ type
 implementation
 
 uses
-  TlHelp32;
+  TlHelp32, Vcl.Forms, System.IOUtils;
 
 { TInstaller }
 
@@ -79,7 +79,7 @@ end;
 procedure TInstaller.CheckDelphiRunning;
 begin
   FCallBackProc('Cheking if is there same Delphi instance running...');
-  if IsProcessRunning('bds.exe') then
+  if (IsProcessRunning('bds.exe')) and (not IsDebuggerPresent()) then
     Raise Exception.Create('Close all you Delphi instances before install.');
 end;
 
@@ -121,11 +121,17 @@ end;
 function TInstaller.GetDelphiVersionFromDescription(DelphiDescription: string): TDelphiVersions;
 begin
   if DelphiDescription.Contains('Seattle') then
-    Result := TDelphiVersions.DelphiSeattle10
+    Result := TDelphiVersions.DelphiSeattle100
   else if DelphiDescription.Contains('Berlin') then
     Result := TDelphiVersions.DelphiBerlin101
   else if DelphiDescription.Contains('Tokyo') then
-    Result := TDelphiVersions.DelphiTokyo;
+    Result := TDelphiVersions.DelphiTokyo102
+  else if DelphiDescription.Contains('Rio') then
+    Result := TDelphiVersions.DelphiRio103
+  else if DelphiDescription.Contains('Rio') then
+    Result := TDelphiVersions.DelphiSydney104
+  else if DelphiDescription.Contains('Alexandria') then
+    Result := TDelphiVersions.DelphiAlexandria110;
 end;
 
 constructor TInstaller.Create(DelphiDesc, DelphiPath: string);
@@ -148,7 +154,26 @@ begin
   CheckDelphiRunning;
   CheckDpkExists;
   RemoveCurCompiledBpl;
-  CompileProject;
+  if TDelphiInstallationCheck.GetEdition(FDelphiVersion) = DELPHI_EDITION_COMMUNITY then
+  begin;
+    var PkgDir:= ExtractFilePath(FPackagePath);
+    if not FileExists(TPath.Combine(PkgDir, BPL_FILENAME)) then
+    begin
+      Application.MessageBox('You have a Community Edition, you have to compile the package by yourself:' + #13#10 +
+                             '1) Start the Project with Packages/<Version>/RFindUnit.dproj' + #13#10 +
+                             '2) compile RFindUnit.bpl as with Release Target' +#13#10 +
+                             '3) come back :-)', 'Error', MB_OK);
+      Halt;
+    end
+    else
+    begin
+      TFile.Copy(PkgDir + BPL_FILENAME, FOutputDir + BPL_FILENAME);
+    end;
+  end
+  else
+  begin;
+    CompileProject;
+  end;
   RegisterBpl;
   RemoveOldDelphiBpl;
   InstallBpl;
@@ -189,7 +214,7 @@ var
   DelphiVersion: TDelphiVersions;
 begin
   FDelphiBinPath := ExtractFilePath(DelphiPath);
-  FCurPath := ExtractFilePath(ParamStr(0)) + 'Installer\';
+  FCurPath := ExtractFilePath(ParamStr(0));
 
   FDelphiBplOutPut := GetEnvironmentVariable('public') + '\Documents\RAD Studio\RFindUnit\' + DelphiDesc + '\bpl\';
   FDcu32IntPath := ExtractFilePath(ParamStr(0)) + '\Thirdy\Dcu32Int\';

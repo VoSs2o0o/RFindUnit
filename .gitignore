@@ -1,5 +1,4 @@
 Installer/build
-Installer/Installer.dproj
 Installer/Installer.dproj.local
 Installer/Installer.identcache
 Installer/Installer.~dsk
@@ -15,3 +14,4 @@ Installer/Installer.~dsk
 Installer-deprecated/Installer.exe
 *.tvsconfig
 *.mes
+__recovery/

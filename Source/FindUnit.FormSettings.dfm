@@ -11,22 +11,22 @@ object frmSettings: TfrmSettings
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poOwnerFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
   TextHeight = 13
   object pgcMain: TPageControl
     Left = 0
     Top = 0
     Width = 654
     Height = 437
-    ActivePage = tsGeneral
+    ActivePage = tsUnusedUses
     Align = alClient
     TabOrder = 0
     OnChange = pgcMainChange
+    ExplicitWidth = 646
+    ExplicitHeight = 425
     object tsGeneral: TTabSheet
       Caption = 'General'
       ImageIndex = 1
@@ -38,6 +38,8 @@ object frmSettings: TfrmSettings
         Align = alClient
         Caption = 'Settings'
         TabOrder = 0
+        ExplicitWidth = 638
+        ExplicitHeight = 397
         object lblLink: TLabel
           Left = 242
           Top = 387

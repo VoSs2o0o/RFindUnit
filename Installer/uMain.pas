@@ -3,9 +3,9 @@ unit uMain;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, Dialogs, Registry,
-  StdCtrls, ComCtrls, uDelphiInstallationCheck, ExtCtrls,
-  uInstaller, ImgList, System.ImageList;
+  WinApi.Windows, System.SysUtils, System.Classes, Vcl.Controls, Vcl.Forms,
+  Vcl.Dialogs, System.Win.Registry, Vcl.StdCtrls, Vcl.ComCtrls, uDelphiInstallationCheck,
+  Vcl.ExtCtrls, uInstaller,  System.ImageList, Vcl.ImgList;
 
 type
   TFrmInstall = class(TForm)
